@@ -1,11 +1,10 @@
 defmodule Todo.Database do
-
   use GenServer
 
-  @db_folder "./persistance"
+  @db_folder "./persist"
 
   def start do
-    GenServer.start(__MODULE__, nil)
+    GenServer.start(__MODULE__, nil, name: __MODULE__)
   end
 
   def store(key, data) do
@@ -31,10 +30,6 @@ defmodule Todo.Database do
     {:noreply, state}
   end
 
-  def file_name(key) do
-    Path.join(@db_folder, to_string(key))
-  end
-
   @impl GenServer
   def handle_call({:get, key}, _, state) do
     data =
@@ -42,7 +37,11 @@ defmodule Todo.Database do
         {:ok, contents} -> :erlang.binary_to_term(contents)
         _ -> nil
       end
-      {:reply, data, state}
+
+    {:reply, data, state}
   end
 
+  defp file_name(key) do
+    Path.join(@db_folder, to_string(key))
+  end
 end
