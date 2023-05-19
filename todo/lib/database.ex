@@ -4,7 +4,8 @@ defmodule Todo.Database do
   @db_folder "./persist"
 
   def start do
-    GenServer.start(__MODULE__, nil, name: __MODULE__)
+    IO.puts("Starting database server")
+    GenServer.start_link(__MODULE__, nil, name: __MODULE__)
   end
 
   def store(key, data) do
